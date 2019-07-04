@@ -28,38 +28,22 @@ class Person(MongoengineObjectType):
         interfaces = (Node,)
 
 
-def resolve_full_name(person, info):
-    return f"{person.first_name} {person.last_name}"
-
-
-class CreatePerson(Mutation):
+class UpdatePerson(Mutation):
     class Arguments:
         first = String()
         last = String()
+        id = String()
 
-    ok = Boolean()
     person = Field(lambda: Person)
 
-    def mutate(root, info, first, last):
-        person = Person(first=first, last=last)
-        ok = True
-        return CreatePerson(person=person, ok=ok)
+    def mutate(root, info, first, last=None, id=None):
+        person = PersonModel(id=id, first_name=first, last_name=last)
+        person.save()
+        return UpdatePerson(person=person)
 
 
 class MyMutations(ObjectType):
-    create_person = CreatePerson.Field()
-
-
-# class Person(ObjectType):
-#     first_name = String()
-#     last_name = String()
-#     id = String()
-#     full_name = String(resolver=resolve_full_name)
-
-#     def __init__(self, first, last):
-#         self.first_name = first
-#         self.last_name = last
-#         self.id = str(uuid4())
+    update_person = UpdatePerson.Field()
 
 
 class QueryData(ObjectType):

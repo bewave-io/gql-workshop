@@ -61,7 +61,7 @@ class Mutation(ObjectType):
 
 class Query(ObjectType):
     # this defines a Field `hello` in our Schema with a single Argument `name`
-    persons = MongoengineConnectionField(Person)
+    people = MongoengineConnectionField(Person)
     roles = MongoengineConnectionField(Role)
 
 

@@ -1,7 +1,7 @@
 mongoengine
 flask
+flask_cors
 flask_graphql
 graphene
 graphene_mongo
 flake8
-pylint

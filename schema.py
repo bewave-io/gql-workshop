@@ -42,39 +42,28 @@ class UpdatePerson(Mutation):
         return UpdatePerson(person=person)
 
 
-class MyMutations(ObjectType):
+class RemovePerson(Mutation):
+    class Arguments:
+        id = String()
+
+    person = Field(lambda: Person)
+
+    def mutate(root, info, id):
+        person = PersonModel(id=id)
+        person.delete()
+        return RemovePerson(person=person)
+
+
+class Mutation(ObjectType):
     update_person = UpdatePerson.Field()
+    remove_person = RemovePerson.Field()
 
 
-class QueryData(ObjectType):
+class Query(ObjectType):
     # this defines a Field `hello` in our Schema with a single Argument `name`
-    hello = String(name=String(default_value="stranger"))
-    goodbye = String()
-    info = String()
-    stuff = List(String, idx=Int(default_value=0))
-    #person = Field(Person)
-    node = Node.Field()
-    all_persons = MongoengineConnectionField(Person)
-    all_role = MongoengineConnectionField(Role)
-    role = Field(Role)
-
-    # our Resolver method takes the GraphQL context (root, info) as well as
-    # Argument (name) for the Field and returns data for the query Response
-    def resolve_hello(root, info, name):
-        return f'Hello {name}!'
-
-    def resolve_goodbye(root, info):
-        return 'See ya!'
-
-    def resolve_info(root, info):
-        return info.schema
-
-    def resolve_stuff(root, info, idx):
-        return [["1", "2", "3"][idx]]
-
-    def resolve_person(root, info):
-        return Person("Jo", "Bin")
+    persons = MongoengineConnectionField(Person)
+    roles = MongoengineConnectionField(Role)
 
 
-schema = Schema(query=QueryData, mutation=MyMutations,
+schema = Schema(query=Query, mutation=Mutation,
                 types=[Department, Person, Role])

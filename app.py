@@ -1,8 +1,11 @@
 # encoding: utf-8
-
 from flask import Flask
 from flask_graphql import GraphQLView
 from schema import schema
+from mongoengine import connect
+
+# You can connect to a real mongo server instance by your own.
+connect('test', host='localhost', alias='default')
 
 app = Flask(__name__)
 app.add_url_rule(

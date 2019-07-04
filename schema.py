@@ -1,5 +1,31 @@
 from graphene import ObjectType, String, Schema, List, Int, Field, Boolean, Mutation
 from uuid import uuid4
+from graphene.relay import Node
+from graphene_mongo import MongoengineConnectionField, MongoengineObjectType
+from models import Department as DepartmentModel
+from models import Person as PersonModel
+from models import Role as RoleModel
+
+
+class Department(MongoengineObjectType):
+
+    class Meta:
+        model = DepartmentModel
+        interfaces = (Node,)
+
+
+class Role(MongoengineObjectType):
+
+    class Meta:
+        model = RoleModel
+        interfaces = (Node,)
+
+
+class Person(MongoengineObjectType):
+
+    class Meta:
+        model = PersonModel
+        interfaces = (Node,)
 
 
 def resolve_full_name(person, info):
@@ -24,16 +50,16 @@ class MyMutations(ObjectType):
     create_person = CreatePerson.Field()
 
 
-class Person(ObjectType):
-    first_name = String()
-    last_name = String()
-    id = String()
-    full_name = String(resolver=resolve_full_name)
+# class Person(ObjectType):
+#     first_name = String()
+#     last_name = String()
+#     id = String()
+#     full_name = String(resolver=resolve_full_name)
 
-    def __init__(self, first, last):
-        self.first_name = first
-        self.last_name = last
-        self.id = str(uuid4())
+#     def __init__(self, first, last):
+#         self.first_name = first
+#         self.last_name = last
+#         self.id = str(uuid4())
 
 
 class QueryData(ObjectType):
@@ -42,7 +68,11 @@ class QueryData(ObjectType):
     goodbye = String()
     info = String()
     stuff = List(String, idx=Int(default_value=0))
-    person = Field(Person)
+    #person = Field(Person)
+    node = Node.Field()
+    all_persons = MongoengineConnectionField(Person)
+    all_role = MongoengineConnectionField(Role)
+    role = Field(Role)
 
     # our Resolver method takes the GraphQL context (root, info) as well as
     # Argument (name) for the Field and returns data for the query Response
@@ -62,4 +92,5 @@ class QueryData(ObjectType):
         return Person("Jo", "Bin")
 
 
-schema = Schema(query=QueryData, mutation=MyMutations)
+schema = Schema(query=QueryData, mutation=MyMutations,
+                types=[Department, Person, Role])

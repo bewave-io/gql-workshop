@@ -1,24 +1,21 @@
 # flask_graphene_mongo/database.py
 from mongoengine import connect
 
-from models import Department, Person, Role
+from models import Department, Person, Role, Group, Cases
 
 # You can connect to a real mongo server instance by your own.
-connect('test', host='localhost', alias='default')
+connect('revelio', host='localhost', alias='default')
 
 
 def init_db():
     # Create the fixtures
-    engineering = Department(name='Engineering')
+    engineering = Department(name='Invalidité')
     engineering.save()
 
-    hr = Department(name='Human Resources')
-    hr.save()
-
-    manager = Role(name='manager')
+    manager = Role(name='Gestionnaire')
     manager.save()
 
-    engineer = Role(name='engineer')
+    engineer = Role(name='Analyste')
     engineer.save()
 
     peter = Person(first_name='Peter', last_name='Parker',
@@ -30,8 +27,10 @@ def init_db():
     roy.save()
 
     tracy = Person(first_name='Tony', last_name='Stark',
-                   department=hr, role=manager)
+                   department=engineering, role=manager)
     tracy.save()
+
+    cases = Ca
 
 
 init_db()

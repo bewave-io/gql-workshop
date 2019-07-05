@@ -30,7 +30,5 @@ def init_db():
                    department=engineering, role=manager)
     tracy.save()
 
-    cases = Ca
-
 
 init_db()

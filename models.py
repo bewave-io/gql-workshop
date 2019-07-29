@@ -33,7 +33,7 @@ class Person(Document):
     role = ReferenceField(Role)
 
 
-class Case(Document):
+class Cases(Document):
     meta = {'collection': 'cases'}
     number = IntField()
     stage = StringField()
